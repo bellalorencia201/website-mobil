@@ -27,9 +27,18 @@ const ShowroomMap = () => {
     ? `https://wa.me/${whatsapp.replace(/[^0-9]/g, "")}`
     : "#";
 
-  const mapsUrl = `https://www.google.com/maps?q=${encodeURIComponent(
-    alamat
-  )}`;
+  // Ambil titik pin dari link OpenStreetMap (bagian marker=lat,lng)
+  // supaya tombol "Buka di Peta" membuka lokasi yang sama persis dengan peta
+  const titikPeta = (() => {
+    const cocok = String(mapEmbedUrl || "").match(
+      /[?&]marker=([-\d.]+)(?:%2C|,)([-\d.]+)/i
+    );
+    return cocok ? `${cocok[1]},${cocok[2]}` : "";
+  })();
+
+  const mapsUrl = titikPeta
+    ? `https://www.google.com/maps/search/?api=1&query=${titikPeta}`
+    : `https://www.google.com/maps?q=${encodeURIComponent(alamat)}`;
 
   return (
 
